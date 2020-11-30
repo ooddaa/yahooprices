@@ -2,8 +2,12 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def test1():
+    return jsonify({ 'result': 'yeah!' }), 200
+
 @app.route('/', methods=['POST'])
-def test():
+def test2():
     if not request.is_json:
         return jsonify({ 'error': 'no json body found' }), 400
     
