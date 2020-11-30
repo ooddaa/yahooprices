@@ -1,2 +1,2 @@
 export $PORT=5000
-web: python app.py
+web: gunicorn app:app
