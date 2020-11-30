@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import gunicorn
 
-app = Flask(__name__)
+mamacita = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def test1():
@@ -21,4 +21,4 @@ def test2():
         }), 200
         
 # app.run(debug=True)
-app.run(port=5000)
+mamacita.run(port=5000)
