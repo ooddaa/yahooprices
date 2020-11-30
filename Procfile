@@ -1,1 +1,1 @@
-web: gunicorn -w 1 app:mamacita
+web: gunicorn app:mamacita
