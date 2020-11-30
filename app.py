@@ -3,11 +3,11 @@ import gunicorn
 
 mamacita = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@mamacita.route('/', methods=['GET'])
 def test1():
     return jsonify({ 'result': 'yeah!' }), 200
 
-@app.route('/', methods=['POST'])
+@mamacita.route('/', methods=['POST'])
 def test2():
     if not request.is_json:
         return jsonify({ 'error': 'no json body found' }), 400
