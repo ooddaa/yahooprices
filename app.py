@@ -19,4 +19,5 @@ def test2():
         'time': content.get('time', [14, 57, 0]), 
         }), 200
         
-app.run(debug=True)
+# app.run(debug=True)
+app.run(port=5000)
