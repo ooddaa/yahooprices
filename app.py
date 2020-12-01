@@ -19,14 +19,14 @@ def response1():
 def response():
     if not request.is_json:
         print('no json body found')
-        return jsonify({ 'errors': ['no json body found'] }), 400
+        return jsonify({ 'errors': ['no json body found'] }), 401
     
     data = request.get_json()['data']
-
+    print(data)
     if not data:
         print('no data received')
-        return jsonify({ 'errors': ['no data received'], 'data': jsonify(data) }), 400
-
+        return jsonify({ 'errors': ['no data received'], 'data': jsonify(data) }), 402
+    print('!!!!!!!!!!!!!!!  all ok')
     # do work
     new_data = []
     for item in data:
