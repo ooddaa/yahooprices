@@ -1,5 +1,10 @@
-# created by virtualenv automatically
+env
+include/*
+bin/*
+lib/*
 Scripts/*
 Lib/*
 __pycache__/*
 pyenv.cfg
+test/*
+.Python
