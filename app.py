@@ -1,24 +1,48 @@
 from flask import Flask, request, jsonify
-import gunicorn
 
 mamacita = Flask(__name__)
 
+def safe_list_get (l, idx, default):
+  try:
+    return l[idx]
+  except IndexError:
+    return default
+
 @mamacita.route('/', methods=['GET'])
-def test1():
+def response1():
     return jsonify({ 'result': 'yeah!' }), 200
 
 @mamacita.route('/', methods=['POST'])
-def test2():
+def response():
     if not request.is_json:
-        return jsonify({ 'error': 'no json body found' }), 400
+        return jsonify({ 'errors': ['no json body found'] }), 400
     
-    content = request.get_json()
+    data = request.get_json()['data']
+
+    if not data:
+        return jsonify({ 'errors': ['no data received'], 'data': data }), 400
+
+    # do work
+    new_data = []
+    for item in data:
+        print(item)
+        # valid = []
+        # if not isinstance(item[0], str): valid[0] = False 
+        # else: valid[0] = True
+        # if not isinstance(item[2], list): valid[2] = False 
+        # else: valid[2] = True
+        # if not isinstance(item[3], list): valid[3] = False 
+        # else: valid[3] = True
+        # print(valid)
+        ticker = safe_list_get(item, 0, 'no ticker') 
+        price = safe_list_get(item, 1, 'no price') 
+        date = safe_list_get(item, 2, [])
+        time = safe_list_get(item, 3, [])
+        new_data.append([ticker, price, date, time])
+    
     return jsonify({ 
-        'ticker': content.get('ticker', 'smth'), 
-        'price': content.get('price', 666), 
-        'date': content.get('date', [2020, 11, 30]), 
-        'time': content.get('time', [14, 57, 0]), 
+        'data': new_data
         }), 200
         
 # app.run(debug=True)
-# mamacita.run()
+mamacita.run(debug=True)
