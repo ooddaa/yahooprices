@@ -32,4 +32,4 @@ def response():
         'data': new_data
         }), 200
         
-mamacita.run(debug=True)
+# mamacita.run(debug=True)
