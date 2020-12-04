@@ -2,13 +2,19 @@
 import yfinance as yf
 from datetime import datetime, timedelta
 
+logging = True
+
+
 def num_to_timestr(s):
     if s < 10:
         return '0{0}'.format(s)
     return '{0}'.format(s)
 
 # tickers == [ticker:str, price: null, [year:int, month:int, day:int], [hour:int, min:int, sec:int]]
-def get_prices(tickers):
+# if attach_prices == True, we attach all available prices
+
+
+def get_prices(tickers, attach_prices):
     pricedata = []
     for item in tickers:
         ticker, price, date, time = item
@@ -16,21 +22,76 @@ def get_prices(tickers):
         hour, minute, second = time
         next_date = datetime(year, month, day) + timedelta(days=1)
 
-        # guard against future dates
-        if datetime(year, month, day) > datetime.now(): 
-            pricedata.append(item) 
+        # check calendar
+        print('year > datetime.now().year', year > datetime.now().year)
+        print(f"year < 1900 or {year} < 1900, {year < 1900}")
+        print(type(year))
+        if year > datetime.now().year or year < 1900:
+            print('check year fired')
+            item.append({
+                "errors": ["Invalid year number"]
+            })
+            pricedata.append(item)
             continue
 
-        data = yf.download(
+        if month > 12 or month < 1:
+            print('check month fired')
+            item.append({
+                "errors": ["Invalid month number"]
+            })
+            pricedata.append(item.append({
+                "errors": ["Invalid month number"]
+            }))
+            continue
+
+        if day > 31 or day < 1:
+            print('check day fired')
+            item.append({
+                "errors": ["Invalid day number"]
+            })
+            pricedata.append(item.append({
+                "errors": ["Invalid day number"]
+            }))
+            continue
+
+        # 1m data available 23 days back ?
+        # -5 days, 15:22:57.297263
+        print("datetime.now() - datetime(year, month, day)",
+              datetime.now() - datetime(year, month, day))
+        # if (datetime.now() - datetime(year, month, day))
+
+        # guard against future dates
+        if datetime(year, month, day) > datetime.now():
+            pricedata.append(item.append({
+                "errors": ["Future date not allowed"]
+            }))
+            continue
+
+        start = "{0}-{1}-{2}".format(year, month, day)
+        end = "{0}-{1}-{2}".format(next_date.year,
+                                   next_date.month, next_date.day)
+
+        if logging == True:
+            print('start=', start, 'end=', end)
+            print('date=', date, 'next_date=', next_date)
+            # print('1601506800=', datetime.fromtimestamp(1601506800).strftime("%m/%d/%Y, %H:%M:%S"),
+            #   '1601593200=', datetime.fromtimestamp(1601593200).strftime("%m/%d/%Y, %H:%M:%S"))
+
+        # download prices
+        df = yf.download(
             tickers=ticker,
             interval="1m",
-            start="{0}-{1}-{2}".format(year, month, day),
-            end="{0}-{1}-{2}".format(next_date.year,
-                                     next_date.month, next_date.day)
+            start=start,
+            end=end
         )
+
         # check if ticker was not found
-        if data.empty:
-            pricedata.append(item) 
+        if df.empty:
+            print('df.empty fired')
+            item.append({
+                "errors": ["Ticker was not found"]
+            })
+            pricedata.append(item)
             continue
 
         # extract by time
@@ -40,16 +101,23 @@ def get_prices(tickers):
                                                       #   num_to_timestr(second),
                                                       '00'
                                                       )
-        
+
         # guard against accessing unavailable index
-        if not datestring in data.index:
-            pricedata.append(item) 
+        if not datestring in df.index:
+            print('unavailable index fired')
+            item.append({
+                "errors": ["1m data is unavailable for this date & time"]
+            })
+            pricedata.append(item)
             continue
+
         # pick the price
-        data = data.loc[datestring]
+        data = df.loc[datestring]
         # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_json.html
         data = [ticker, data['Close'], date, time]
+        print(attach_prices)
+        if attach_prices == True:
+            data.append(df.to_json())
+
         pricedata.append(data)
-
     return pricedata
-
