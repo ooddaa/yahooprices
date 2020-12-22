@@ -23,12 +23,7 @@ def get_prices(tickers, attach_prices=False):
         next_date = datetime(year, month, day) + timedelta(days=1)
 
         # check calendar
-        print('year > datetime.now().year', year > datetime.now().year)
-        print(f"year > datetime.now().year or {year} < {datetime.now().year}")
-        print(f"year < 1900 or {year} < 1900, {year < 1900}")
-        print(type(year))
         if year > datetime.now().year or year < 1900:
-            print('check year fired')
             item.append({
                 "errors": ["Invalid year number"]
             })
@@ -36,7 +31,6 @@ def get_prices(tickers, attach_prices=False):
             continue
 
         if month > 12 or month < 1:
-            print('check month fired')
             item.append({
                 "errors": ["Invalid month number"]
             })
@@ -46,7 +40,6 @@ def get_prices(tickers, attach_prices=False):
             continue
 
         if day > 31 or day < 1:
-            print('check day fired')
             item.append({
                 "errors": ["Invalid day number"]
             })
@@ -56,12 +49,6 @@ def get_prices(tickers, attach_prices=False):
             continue
 
         # TODO Guard for Saturdays/Sundays
-
-        # 1m data available 23 days back ?
-        # -5 days, 15:22:57.297263
-        print("datetime.now() - datetime(year, month, day)",
-              datetime.now() - datetime(year, month, day))
-        # if (datetime.now() - datetime(year, month, day))
 
         # guard against future dates
         if datetime(year, month, day) > datetime.now():
@@ -92,7 +79,6 @@ def get_prices(tickers, attach_prices=False):
 
         # check if ticker was not found
         if df.empty:
-            print('df.empty fired')
             item.append({
                 "errors": ["Ticker was not found"]
             })
@@ -122,7 +108,6 @@ def get_prices(tickers, attach_prices=False):
         data = [ticker, data['Close'], date, time]
 
         if attach_prices == True:
-            print("Attaching all prices")
             data.append(df.to_json())
 
         pricedata.append(data)

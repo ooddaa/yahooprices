@@ -18,15 +18,12 @@ def response1():
 
 @mamacita.route('/', methods=['POST'])
 def response():
-    print('response 1')
     if not request.is_json:
-        print('no json body found')
         return jsonify({'errors': ['no json body found']}), 400
 
     data = request.get_json()['data']
 
     if not data:
-        print('no data received')
         return jsonify({'errors': ['no data received'], 'data': jsonify(data)}), 400
 
     # do work
@@ -39,15 +36,12 @@ def response():
 
 @mamacita.route('/allPrices', methods=['POST'])
 def response2():
-    print('response 2')
     if not request.is_json:
-        print('no json body found')
         return jsonify({'errors': ['no json body found']}), 400
 
     data = request.get_json()['data']
 
     if not data:
-        print('no data received')
         return jsonify({'errors': ['no data received'], 'data': jsonify(data)}), 400
 
     # do work
@@ -55,7 +49,6 @@ def response2():
 
     return jsonify({
         'data': new_data
-        # 'data': 'what else is  there'
     }), 200
 
 
