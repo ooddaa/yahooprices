@@ -59,4 +59,4 @@ def response2():
     }), 200
 
 
-# mamacita.run(debug=True)
+mamacita.run(debug=True)

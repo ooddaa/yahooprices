@@ -8,3 +8,4 @@ __pycache__/*
 pyenv.cfg
 test/*
 .Python
+venv/*

@@ -14,7 +14,7 @@ def num_to_timestr(s):
 # if attach_prices == True, we attach all available prices
 
 
-def get_prices(tickers, attach_prices):
+def get_prices(tickers, attach_prices=False):
     pricedata = []
     for item in tickers:
         ticker, price, date, time = item
@@ -24,6 +24,7 @@ def get_prices(tickers, attach_prices):
 
         # check calendar
         print('year > datetime.now().year', year > datetime.now().year)
+        print(f"year > datetime.now().year or {year} < {datetime.now().year}")
         print(f"year < 1900 or {year} < 1900, {year < 1900}")
         print(type(year))
         if year > datetime.now().year or year < 1900:
@@ -53,6 +54,8 @@ def get_prices(tickers, attach_prices):
                 "errors": ["Invalid day number"]
             }))
             continue
+
+        # TODO Guard for Saturdays/Sundays
 
         # 1m data available 23 days back ?
         # -5 days, 15:22:57.297263
@@ -84,6 +87,8 @@ def get_prices(tickers, attach_prices):
             start=start,
             end=end
         )
+        if logging == True:
+            print(df.info())
 
         # check if ticker was not found
         if df.empty:
@@ -115,8 +120,9 @@ def get_prices(tickers, attach_prices):
         data = df.loc[datestring]
         # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_json.html
         data = [ticker, data['Close'], date, time]
-        print(attach_prices)
+
         if attach_prices == True:
+            print("Attaching all prices")
             data.append(df.to_json())
 
         pricedata.append(data)
