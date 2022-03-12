@@ -21,13 +21,19 @@ def response():
     if not request.is_json:
         return jsonify({'errors': ['no json body found']}), 400
 
+    # print(request.get_json())
+    # {'data': [['AMD', None, [2020, 11, 24], [15, 0, 0]]]}
     data = request.get_json()['data']
 
+    # if data['data'] == None:
+    #   print("DATA  IS  NOOOOONE")
     if not data:
         return jsonify({'errors': ['no data received'], 'data': jsonify(data)}), 400
 
     # do work
+    print("get_prices(data)")
     new_data = get_prices(data)
+    print(new_data)
 
     return jsonify({
         'data': new_data
@@ -52,4 +58,4 @@ def response2():
     }), 200
 
 
-# mamacita.run(debug=True)
+mamacita.run(debug=True)

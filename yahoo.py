@@ -74,6 +74,7 @@ def get_prices(tickers, attach_prices=False):
             start=start,
             end=end
         )
+        
         if logging == True:
             print(df.info())
 
